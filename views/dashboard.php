@@ -3,7 +3,7 @@
  * Dashboard View Tab: Operations & Dispatch Overview
  *
  * @package Dev_Nahian_Fleet_Manager
- * @since   1.2.0
+ * @since   1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,6 +15,10 @@ global $wpdb;
 $table_bookings = $wpdb->prefix . 'dev_nahian_bookings';
 $table_cars     = $wpdb->prefix . 'dev_nahian_cars';
 $currency       = get_option( 'dev_nahian_currency', 'USD' );
+
+// Get Current Logged-In User for Welcome Greeting
+$current_user = wp_get_current_user();
+$username     = ! empty( $current_user->display_name ) ? $current_user->display_name : $current_user->user_login;
 
 // 1. Initialize Metrics
 $total_vehicles  = 0;
@@ -32,10 +36,10 @@ $today_end   = current_time( 'Y-m-d' ) . ' 23:59:59';
 $today_date  = current_time( 'Y-m-d' );
 
 // 2. Query Vehicle Fleet Analytics
-$total_vehicles = (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$table_cars}" );
-$ready_vehicles = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table_cars} WHERE status = %s", 'ready' ) );
+$total_vehicles  = (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$table_cars}" );
+$ready_vehicles  = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table_cars} WHERE status = %s", 'ready' ) );
 $rented_vehicles = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table_cars} WHERE status IN (%s, %s)", 'rented', 'active' ) );
-$maint_vehicles = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table_cars} WHERE status IN (%s, %s)", 'maintenance', 'in_workshop' ) );
+$maint_vehicles  = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table_cars} WHERE status IN (%s, %s)", 'maintenance', 'in_workshop' ) );
 
 // 3. Query Bookings & Today's Revenue
 $total_bookings = (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$table_bookings}" );
@@ -80,6 +84,8 @@ $recent_dispatches = $wpdb->get_results(
         padding: 20px 24px;
         margin-bottom: 24px;
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        flex-wrap: wrap;
+        gap: 16px;
     }
     .dev-nahian-hud-meta-group {
         display: flex;
@@ -90,6 +96,7 @@ $recent_dispatches = $wpdb->get_results(
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-wrap: wrap;
     }
     .dev-nahian-status-chip {
         display: inline-flex;
@@ -124,18 +131,30 @@ $recent_dispatches = $wpdb->get_results(
         color: #0f172a;
         letter-spacing: -0.02em;
     }
+    .dev-nahian-hud-heading span {
+        color: #0d9488;
+    }
     .dev-nahian-hud-controls {
         display: flex;
         align-items: center;
         gap: 16px;
+        flex-wrap: wrap;
     }
-    .dev-nahian-hud-latency-readout {
+    .dev-nahian-live-clock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         font-size: 12px;
-        color: #475569;
-    }
-    .dev-nahian-hud-latency-val {
-        color: #0d9488;
         font-weight: 700;
+        color: #334155;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-feature-settings: "tnum";
+    }
+    .dev-nahian-live-clock-badge svg {
+        color: #0d9488;
     }
     .dev-nahian-btn-action {
         display: inline-flex;
@@ -368,18 +387,23 @@ $recent_dispatches = $wpdb->get_results(
         <div class="dev-nahian-hud-badge-row">
             <span class="dev-nahian-status-chip">
                 <span class="dev-nahian-radar-dot"></span>
-                <?php esc_html_e( 'Live Telemetry Feed', 'dev-nahian-car' ); ?>
+                <?php esc_html_e( 'System Active • v1.0', 'dev-nahian-car' ); ?>
             </span>
             <span style="font-size: 11px; color: #94a3b8;">&bull;</span>
-            <span style="font-size: 12px; font-weight: 600; color: #475569;"><?php esc_html_e( 'Enterprise Dispatch Terminal v1.2', 'dev-nahian-car' ); ?></span>
+            <span style="font-size: 12px; font-weight: 600; color: #475569;"><?php esc_html_e( 'Enterprise Fleet Terminal', 'dev-nahian-car' ); ?></span>
         </div>
-        <h2 class="dev-nahian-hud-heading"><?php esc_html_e( 'Operations & Command Center', 'dev-nahian-car' ); ?></h2>
+        <h2 class="dev-nahian-hud-heading">
+            <?php printf( esc_html__( 'Welcome, %s', 'dev-nahian-car' ), '<span>' . esc_html( $username ) . '</span>' ); ?>
+        </h2>
     </div>
     <div class="dev-nahian-hud-controls">
-        <span class="dev-nahian-hud-latency-readout">
-            <?php esc_html_e( 'Gateway Status:', 'dev-nahian-car' ); ?> <strong><?php esc_html_e( 'Online', 'dev-nahian-car' ); ?></strong> &bull; <?php esc_html_e( 'Ping:', 'dev-nahian-car' ); ?> <span class="dev-nahian-hud-latency-val">9ms</span>
-        </span>
-        <button type="button" class="dev-nahian-btn-action" id="devNahianSyncDashboardBtn">
+        <!-- Live Synchronized Clock Readout -->
+        <div class="dev-nahian-live-clock-badge" id="devNahianLiveClock" aria-label="<?php esc_attr_e( 'Live Local Time', 'dev-nahian-car' ); ?>">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span id="devNahianClockText">--:--:-- --</span>
+        </div>
+
+        <button type="button" class="dev-nahian-btn-action" id="devNahianSyncDashboardBtn" title="<?php esc_attr_e( 'Refresh telemetry feed', 'dev-nahian-car' ); ?>">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
             </svg>
@@ -584,6 +608,18 @@ $recent_dispatches = $wpdb->get_results(
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. Live Clock Ticker
+    function updateLiveClock() {
+        var clockEl = document.getElementById('devNahianClockText');
+        if (clockEl) {
+            var now = new Date();
+            clockEl.textContent = now.toLocaleTimeString();
+        }
+    }
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+
+    // 2. Gateway Sync Animation
     var syncBtn = document.getElementById('devNahianSyncDashboardBtn');
     if (syncBtn) {
         syncBtn.addEventListener('click', function() {

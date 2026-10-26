@@ -3,7 +3,7 @@
  * Cars Module: Fleet Registry List View (`cars-all.php`)
  *
  * @package Dev_Nahian_Fleet_Manager
- * @since   1.0.0
+ * @since   1.1.0
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -57,7 +57,7 @@ $cars_count = is_array( $cars ) ? count( $cars ) : 0;
     </span>
 </div>
 
-<table class="wp-list-table widefat fixed striped" style="width:100%; border-radius:8px; overflow:hidden;">
+<table class="wp-list-table widefat fixed striped dev-nahian-datatable" style="width:100%; border-radius:8px; overflow:hidden;">
     <thead>
         <tr>
             <th><?php esc_html_e( 'Model & VIN', 'dev-nahian-car' ); ?></th>
@@ -65,7 +65,7 @@ $cars_count = is_array( $cars ) ? count( $cars ) : 0;
             <th style="width: 140px;"><?php esc_html_e( 'Category', 'dev-nahian-car' ); ?></th>
             <th style="width: 130px;"><?php esc_html_e( 'Daily Rate', 'dev-nahian-car' ); ?></th>
             <th style="width: 130px;"><?php esc_html_e( 'Status', 'dev-nahian-car' ); ?></th>
-            <th style="text-align: right; width: 130px;"><?php esc_html_e( 'Actions', 'dev-nahian-car' ); ?></th>
+            <th style="text-align: right; width: 140px;"><?php esc_html_e( 'Actions', 'dev-nahian-car' ); ?></th>
         </tr>
     </thead>
     <tbody>

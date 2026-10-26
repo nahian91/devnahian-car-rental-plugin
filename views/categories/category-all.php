@@ -3,7 +3,7 @@
  * Categories Module: All Categories List Table (`category-all.php`)
  *
  * @package Dev_Nahian_Fleet_Manager
- * @since   1.0.0
+ * @since   1.1.0
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -27,7 +27,7 @@ if ( ! empty( $car_counts_raw ) ) {
     </span>
 </div>
 
-<table class="wp-list-table widefat fixed striped" style="width:100%; border-radius:8px; overflow:hidden;">
+<table class="wp-list-table widefat fixed striped dev-nahian-datatable" style="width:100%; border-radius:8px; overflow:hidden;">
     <thead>
         <tr>
             <th><?php esc_html_e( 'Category Name', 'dev-nahian-car' ); ?></th>
@@ -36,7 +36,7 @@ if ( ! empty( $car_counts_raw ) ) {
             <th><?php esc_html_e( 'Description', 'dev-nahian-car' ); ?></th>
             <th><?php esc_html_e( 'Registered Cars', 'dev-nahian-car' ); ?></th>
             <th><?php esc_html_e( 'Status', 'dev-nahian-car' ); ?></th>
-            <th style="text-align: right; width: 140px;"><?php esc_html_e( 'Actions', 'dev-nahian-car' ); ?></th>
+            <th style="text-align: right; width: 170px;"><?php esc_html_e( 'Actions', 'dev-nahian-car' ); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -56,9 +56,17 @@ if ( ! empty( $car_counts_raw ) ) {
                     <td><?php printf( esc_html__( '%s Cars', 'dev-nahian-car' ), esc_html( number_format_i18n( $cars_in_cat ) ) ); ?></td>
                     <td><span class="dev-nahian-status-pill <?php echo esc_attr( $cat_slug_key ); ?>">&bull; <?php echo esc_html( ucfirst( $cat_slug_key ) ); ?></span></td>
                     <td style="text-align: right;">
-                        <a href="<?php echo esc_url( $view_url ); ?>" class="button button-small"><?php esc_html_e( 'View', 'dev-nahian-car' ); ?></a>
-                        <a href="<?php echo esc_url( $edit_url ); ?>" class="button button-small"><?php esc_html_e( 'Edit', 'dev-nahian-car' ); ?></a>
-                        <a href="<?php echo esc_url( $delete_url ); ?>" class="button button-small button-link-delete" onclick="return confirm('<?php esc_attr_e( 'Delete this category permanently?', 'dev-nahian-car' ); ?>');">&times;</a>
+                        <div class="dev-nahian-btn-group">
+                            <a href="<?php echo esc_url( $view_url ); ?>" class="dev-nahian-btn dev-nahian-btn-view" title="<?php esc_attr_e( 'View Category Dossier', 'dev-nahian-car' ); ?>">
+                                <?php echo dev_nahian_get_icon( 'view' ); ?> <?php esc_html_e( 'View', 'dev-nahian-car' ); ?>
+                            </a>
+                            <a href="<?php echo esc_url( $edit_url ); ?>" class="dev-nahian-btn dev-nahian-btn-edit" title="<?php esc_attr_e( 'Edit Category', 'dev-nahian-car' ); ?>">
+                                <?php echo dev_nahian_get_icon( 'edit' ); ?> <?php esc_html_e( 'Edit', 'dev-nahian-car' ); ?>
+                            </a>
+                            <a href="<?php echo esc_url( $delete_url ); ?>" class="dev-nahian-btn dev-nahian-btn-delete" title="<?php esc_attr_e( 'Delete Category Record', 'dev-nahian-car' ); ?>" onclick="return confirm('<?php esc_attr_e( 'Delete this category permanently?', 'dev-nahian-car' ); ?>');">
+                                <?php echo dev_nahian_get_icon( 'delete' ); ?>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>

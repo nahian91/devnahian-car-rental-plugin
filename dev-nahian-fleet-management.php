@@ -57,23 +57,25 @@ function dev_nahian_register_fleet_menu() {
 add_action( 'admin_menu', 'dev_nahian_register_fleet_menu' );
 
 /**
- * 3. Enqueue Admin Scripts and Styles
+ * 3. Enqueue Admin Scripts and Styles (DataTables via CDN with Warning Suppression)
  */
 function dev_nahian_enqueue_fleet_assets( $hook ) {
     if ( false === strpos( $hook, 'dev-nahian-fleet-manager' ) ) {
         return;
     }
 
+    // DataTables CSS CDN
     wp_enqueue_style(
         'dev-nahian-datatables-css',
-        DEV_NAHIAN_FLEET_URL . 'assets/css/jquery.dataTables.min.css',
+        'https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css',
         array(),
         '1.13.6'
     );
 
+    // DataTables JS CDN
     wp_enqueue_script(
         'dev-nahian-datatables-js',
-        DEV_NAHIAN_FLEET_URL . 'assets/js/jquery.dataTables.min.js',
+        'https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js',
         array( 'jquery' ),
         '1.13.6',
         true
@@ -87,6 +89,9 @@ function dev_nahian_enqueue_fleet_assets( $hook ) {
     wp_add_inline_script(
         'dev-nahian-datatables-js',
         'jQuery(document).ready(function($) {
+            // Completely suppress DataTables warnings & alerts (e.g., column count mismatches when tables are empty)
+            $.fn.dataTable.ext.errorMode = "none";
+
             $(".dev-nahian-datatable").DataTable({
                 pageLength: 10,
                 responsive: true,

@@ -18,7 +18,7 @@ $promo_count = is_array( $promos ) ? count( $promos ) : 0;
     </span>
 </div>
 
-<table class="wp-list-table widefat fixed striped" style="width:100%; border-radius:8px; overflow:hidden;">
+<table class="wp-list-table widefat fixed striped dev-nahian-datatable" style="width:100%; border-radius:8px; overflow:hidden;">
     <thead>
         <tr>
             <th style="width: 140px;"><?php esc_html_e( 'Coupon Code', 'dev-nahian-car' ); ?></th>
@@ -26,7 +26,7 @@ $promo_count = is_array( $promos ) ? count( $promos ) : 0;
             <th><?php esc_html_e( 'Redemptions', 'dev-nahian-car' ); ?></th>
             <th><?php esc_html_e( 'Expiration Date', 'dev-nahian-car' ); ?></th>
             <th><?php esc_html_e( 'Status', 'dev-nahian-car' ); ?></th>
-            <th style="text-align: right; width: 140px;"><?php esc_html_e( 'Actions', 'dev-nahian-car' ); ?></th>
+            <th style="text-align: right; width: 170px;"><?php esc_html_e( 'Actions', 'dev-nahian-car' ); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -47,8 +47,14 @@ $promo_count = is_array( $promos ) ? count( $promos ) : 0;
                     <td><?php echo esc_html( ! empty( $p['expiry_date'] ) ? $p['expiry_date'] : 'No Expiry' ); ?></td>
                     <td><span class="dev-nahian-status-pill <?php echo esc_attr( $status_key ); ?>">&bull; <?php echo esc_html( ucfirst( $status_key ) ); ?></span></td>
                     <td style="text-align: right;">
-                        <a href="<?php echo esc_url( $edit_url ); ?>" class="button button-small"><?php esc_html_e( 'Edit', 'dev-nahian-car' ); ?></a>
-                        <a href="<?php echo esc_url( $delete_url ); ?>" class="button button-small button-link-delete" onclick="return confirm('<?php esc_attr_e( 'Remove this promo code permanently?', 'dev-nahian-car' ); ?>');">&times;</a>
+                        <div class="dev-nahian-btn-group">
+                            <a href="<?php echo esc_url( $edit_url ); ?>" class="dev-nahian-btn dev-nahian-btn-edit" title="<?php esc_attr_e( 'Edit Coupon', 'dev-nahian-car' ); ?>">
+                                <?php echo dev_nahian_get_icon( 'edit' ); ?> <?php esc_html_e( 'Edit', 'dev-nahian-car' ); ?>
+                            </a>
+                            <a href="<?php echo esc_url( $delete_url ); ?>" class="dev-nahian-btn dev-nahian-btn-delete" title="<?php esc_attr_e( 'Delete Coupon', 'dev-nahian-car' ); ?>" onclick="return confirm('<?php esc_attr_e( 'Remove this promo code permanently?', 'dev-nahian-car' ); ?>');">
+                                <?php echo dev_nahian_get_icon( 'delete' ); ?>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
